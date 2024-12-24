@@ -31,8 +31,7 @@ public class SecurityConfig {
 //                .logout(logout -> logout.logoutUrl("/logout.html")
 //                        .permitAll()
 //                )
-                .csrf(AbstractHttpConfigurer::disable)
-        ;
+                .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 }
