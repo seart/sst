@@ -4,6 +4,8 @@ spring:
       name: abc
       password: aaaaa
       roles: admin
+  main:
+    banner-mode: off
 
 
 

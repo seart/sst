@@ -1,5 +1,9 @@
 package org.example.latestspringsecurity.controller;
 
+import org.example.latestspringsecurity.handler.SecurityAuthenticationEntryPoint;
+import org.example.latestspringsecurity.handler.SecurityAuthenticationFailureHandler;
+import org.example.latestspringsecurity.handler.SecurityAuthenticationSuccessHandler;
+import org.example.latestspringsecurity.handler.SecurityLogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,19 +22,11 @@ public class SecurityConfig {
                         .requestMatchers("/js/**", "/css/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.loginPage("/login.html").permitAll()
-                        //指登录成功后，是否始终跳转到登录成功url。它默认为false
-                        .defaultSuccessUrl("/index.html", true)
-                        //post登录接口，登录验证由系统实现
-                        .loginProcessingUrl("/login")
-                        .failureUrl("/error.html")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
+                .formLogin(form -> form.successHandler(new SecurityAuthenticationSuccessHandler())
+                        .failureHandler(new SecurityAuthenticationFailureHandler())
                 )
-                // logout 暂时没用上
-//                .logout(logout -> logout.logoutUrl("/logout.html")
-//                        .permitAll()
-//                )
+                .logout(logout -> logout.logoutSuccessHandler(new SecurityLogoutSuccessHandler()))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new SecurityAuthenticationEntryPoint()))
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
