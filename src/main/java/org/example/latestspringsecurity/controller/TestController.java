@@ -12,6 +12,23 @@ public class TestController {
     public String test() {
         return "test";
     }
+    @GetMapping("/admin/hello")
+    public String helloAdmin() {
+
+        return "hello, admin";
+    }
+
+    @GetMapping("/user/hello")
+    public String helloUser() {
+
+        return "hello, user";
+    }
+
+    @GetMapping("/visitor/hello")
+    public String helloVisitor() {
+
+        return "hello, visitor";
+    }
 
 
 }

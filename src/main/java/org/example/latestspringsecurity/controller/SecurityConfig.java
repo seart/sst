@@ -1,37 +1,59 @@
 package org.example.latestspringsecurity.controller;
 
+import org.example.latestspringsecurity.service.MyUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private MyUserDetailsService userDetailsService;
+
+    // 配置认证入口端点，主要是设置认证参数信息
+    @Bean
+    public DigestAuthenticationEntryPoint digestAuthenticationEntryPoint() {
+        DigestAuthenticationEntryPoint point = new DigestAuthenticationEntryPoint();
+        point.setKey("Security Demos");
+        point.setRealmName("yyg");
+        point.setNonceValiditySeconds(500);
+        return point;
+    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/js/**", "/css/**", "/images/**").permitAll()
+    public DigestAuthenticationFilter digestAuthenticationFilter() {
+        DigestAuthenticationFilter filter = new DigestAuthenticationFilter();
+        filter.setAuthenticationEntryPoint(digestAuthenticationEntryPoint());
+        filter.setUserDetailsService(userDetailsService);
+        return filter;
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/visitor/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.loginPage("/login.html").permitAll()
-                        //指登录成功后，是否始终跳转到登录成功url。它默认为false
-                        .defaultSuccessUrl("/index.html", true)
-                        //post登录接口，登录验证由系统实现
-                        .loginProcessingUrl("/login")
-                        .failureUrl("/error.html")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(digestAuthenticationEntryPoint())
                 )
-                // logout 暂时没用上
-//                .logout(logout -> logout.logoutUrl("/logout.html")
-//                        .permitAll()
-//                )
-                .csrf(AbstractHttpConfigurer::disable);
+                // 添加自定义过滤器到过滤器链中
+                .addFilterBefore(digestAuthenticationFilter(), DigestAuthenticationFilter.class);
+
         return http.build();
     }
+
+
 }
