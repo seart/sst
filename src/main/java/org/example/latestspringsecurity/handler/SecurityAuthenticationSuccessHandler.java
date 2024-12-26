@@ -32,8 +32,7 @@ public class SecurityAuthenticationSuccessHandler extends SavedRequestAwareAuthe
 //        map.put("message", "登录成功");
 //        map.put("code", 200);
 //        map.put("data",dataMap);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        out.write(objectMapper.writeValueAsString(map));
+//        out.write(JSONUtil.toJsonStr(map));
 //        out.flush();
 //        out.close();
     }

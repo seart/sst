@@ -1,6 +1,6 @@
 package org.example.latestspringsecurity.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cn.hutool.json.JSONUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +22,7 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
         map.put("message", "尚未登录，请先登录");
         map.put("code", 401);
         map.put("data",null);
-        out.write(new ObjectMapper().writeValueAsString(map));
+        out.write(JSONUtil.toJsonStr(map));
         out.flush();
         out.close();
     }
