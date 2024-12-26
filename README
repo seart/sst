@@ -7,8 +7,8 @@ main                    http基本认证/form表单认证
 
 
 授权：
-feature/authorization      基于内存数据库授权
-
+feature/authorization           基于内存数据库授权
+feature/authorization-jdbc       基于jdbc的数据库授权
 
 
 
