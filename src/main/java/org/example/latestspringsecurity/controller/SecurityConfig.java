@@ -2,20 +2,29 @@ package org.example.latestspringsecurity.controller;
 
 import org.example.latestspringsecurity.handler.SecurityAuthenticationFailureHandler;
 import org.example.latestspringsecurity.handler.SecurityAuthenticationSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private DataSource dataSource;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -29,25 +38,36 @@ public class SecurityConfig {
                 .formLogin(form -> form.successHandler(new SecurityAuthenticationSuccessHandler())
                         .failureHandler(new SecurityAuthenticationFailureHandler())
                 )
-//                .logout(logout -> logout.logoutSuccessHandler(new SecurityLogoutSuccessHandler()))
-//                .exceptionHandling(exception ->
+                .exceptionHandling(exception ->
                         // 用spring security 自带的登录页，要屏蔽下面配置
                        // 如果开启配置，需要前端做跳转处理，跳转到登录页才行，否则会一直返回 SecurityAuthenticationEntryPoint json 结构体数据
 //                      exception.authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
-//                {})
+                {})
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
+    /**
+     * 如果不存在用户，会创建
+     * @return
+     */
     @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        PasswordEncoder encoder = passwordEncoder();
-        String encoderPassword = encoder.encode("123");
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("admin").password(encoderPassword).roles("ADMIN", "USER").build());
-        manager.createUser(User.withUsername("user").password(encoderPassword).roles("USER").build());
+    public UserDetailsService createUserDetailService() {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+        if (!manager.userExists("user")) {
+            manager.createUser(User.withUsername("user")
+                    .password(passwordEncoder.encode("123"))
+                    .roles("USER").build());
+        }
+        if (!manager.userExists("admin")) {
+            manager.createUser(User.withUsername("admin")
+                    .password(passwordEncoder.encode("123"))
+                    .roles("USER", "ADMIN").build());
+        }
         return manager;
     }
+
 
     /**
      * 加密之后的密码进行匹配
