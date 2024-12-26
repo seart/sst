@@ -1,6 +1,6 @@
 package org.example.latestspringsecurity.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cn.hutool.json.JSONUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,8 +29,7 @@ public class SecurityLogoutSuccessHandler implements LogoutSuccessHandler {
         map.put("message", "退出成功");
         map.put("code", 200);
         map.put("data",null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        out.write(objectMapper.writeValueAsString(map));
+        out.write(JSONUtil.toJsonStr(map));
         out.flush();
         out.close();
     }

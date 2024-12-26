@@ -1,6 +1,6 @@
 package org.example.latestspringsecurity.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cn.hutool.json.JSONUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,8 +23,7 @@ public class SecurityAuthenticationFailureHandler extends ExceptionMappingAuthen
         map.put("message", "用户名或密码错误");
         map.put("code", 401);
         map.put("data",null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        out.write(objectMapper.writeValueAsString(map));
+        out.write(JSONUtil.toJsonStr(map));
         out.flush();
         out.close();
     }
