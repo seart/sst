@@ -26,7 +26,7 @@ public class SecurityLogoutSuccessHandler implements LogoutSuccessHandler {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
         Map<String, Object> map = new HashMap<>();
-        map.put("message", "注销成功");
+        map.put("message", "退出成功");
         map.put("code", 200);
         map.put("data",null);
         ObjectMapper objectMapper = new ObjectMapper();
