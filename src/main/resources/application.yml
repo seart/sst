@@ -1,9 +1,9 @@
 spring:
-  security:
-    user:
-      name: abc
-      password: aaaaa
-      roles: admin
+#  security:
+#    user:
+#      name: abc
+#      password: aaaaa
+#      roles: admin
   main:
     banner-mode: off
 
