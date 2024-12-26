@@ -32,13 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-READEME.txt
-
 maven-wrapper.*
 mvnw*
 
 *.DS_Store
-
-README.txt
 
 logs

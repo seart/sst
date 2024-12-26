@@ -1,0 +1,18 @@
+
+认证：
+feature/separation      前后端分离的那种
+feature/http-digest     http 摘要认证
+main                    http基本认证/form表单认证
+
+
+
+授权：
+feature/authorization      基于内存数据库授权
+
+
+
+
+
+
+
+
