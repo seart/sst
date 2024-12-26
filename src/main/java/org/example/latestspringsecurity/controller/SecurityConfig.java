@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -53,16 +52,17 @@ public class SecurityConfig {
      */
     @Bean
     public UserDetailsService createUserDetailService() {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        PasswordEncoder encoder = passwordEncoder();
+
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
         if (!manager.userExists("user")) {
             manager.createUser(User.withUsername("user")
-                    .password(passwordEncoder.encode("123"))
+                    .password(encoder.encode("123"))
                     .roles("USER").build());
         }
         if (!manager.userExists("admin")) {
             manager.createUser(User.withUsername("admin")
-                    .password(passwordEncoder.encode("123"))
+                    .password(encoder.encode("123"))
                     .roles("USER", "ADMIN").build());
         }
         return manager;
