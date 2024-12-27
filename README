@@ -1,18 +1,13 @@
 
 认证：
-feature/separation      前后端分离的那种
-feature/http-digest     http 摘要认证
 main                    http基本认证/form表单认证
-
-
+feature/http-digest-05         http 摘要认证
+feature/login-separation-06     前后端分离登录
 
 授权：
-feature/authorization           基于内存数据库授权
-feature/authorization-jdbc       基于jdbc的数据库授权
-
-
-
-
+feature/authorization-memory-07     基于内存模式授权
+feature/authorization-jdbc-08       基于spring security 内置数据库模型授权
+feature/authorization-cutom-09      基于用户自定义数据库模型授权
 
 
 
