@@ -21,7 +21,7 @@ public class SecurityAuthenticationFailureHandler extends ExceptionMappingAuthen
         PrintWriter out = response.getWriter();
         Map<String, Object> map = new HashMap<>();
         map.put("message", "用户名或密码错误");
-        map.put("code", 401);
+        map.put("code", 200);
         map.put("data",null);
         out.write(JSONUtil.toJsonStr(map));
         out.flush();
